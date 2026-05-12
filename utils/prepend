@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+#
+# Script name: prepend
+# Description: A bash script for prepending a line text to a file.
+# Dependencies: coreutils
+# GitLab: https://www.gitlab.com/dwt1/miniutils
+# License: https://www.gitlab.com/dwt1/miniutils/LICENSE
+# Contributors: Derek Taylor
+
+# Set with the flags "-e", "-u","-o pipefail" cause the script to fail
+# if certain things happen, which is a good thing.  Otherwise, we can
+# get hidden bugs that are hard to discover.
+set -euo pipefail
+
+# Check if a filename argument is provided
+if [ "$#" -ne 1 ]; then
+    echo "Usage: prepend <filename>"
+    exit
+fi
+
+purple="$(tput setaf 5 bold)"
+green="$(tput setaf 2 bold)"
+reset="$(tput sgr0)"
+
+filename="$1"
+
+# Prompt for input
+echo "Enter text to prepend to file ${purple}$filename${reset}"
+read -e -r -p "${purple}>>>${reset} " input_text
+
+# Prepend the text to the beginning of the file
+# Create a temp file, write new text, then original content
+temp_file=$(mktemp)
+
+printf "%s\n" "$input_text" > "$temp_file"
+cat "$filename" >> "$temp_file"
+
+mv "$temp_file" "$filename"
+
+echo "${green}✓${reset} Text successfully prepended!"
+
+

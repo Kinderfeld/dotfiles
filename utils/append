@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#
+# Script name: append
+# Description: A bash script for appending a line text to a file.
+# Dependencies: coreutils
+# GitLab: https://www.gitlab.com/dwt1/miniutils
+# License: https://www.gitlab.com/dwt1/miniutils/LICENSE
+# Contributors: Derek Taylor
+
+# Set with the flags "-e", "-u","-o pipefail" cause the script to fail
+# if certain things happen, which is a good thing.  Otherwise, we can
+# get hidden bugs that are hard to discover.
+set -euo pipefail
+
+# Check if a filename argument is provided
+if [ "$#" -ne 1 ]; then
+    echo "Usage: append <filename>"
+    exit
+fi
+
+purple="$(tput setaf 5 bold)"
+green="$(tput setaf 2 bold)"
+reset="$(tput sgr0)"
+
+filename="$1"
+
+# Use 'read -e' to get user input with readline support
+# -p sets the prompt
+# -r prevents backslash escapes from being interpreted
+echo "Enter text to append to file ${purple}$filename${reset}:"
+read -e -r -p "${purple}>>>${reset} " input_text
+
+# Append the entered text followed by a newline to the file
+echo "$input_text" >> "$filename"
+echo "${green}✓${reset} Text successfully appended!"
+

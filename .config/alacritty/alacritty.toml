@@ -1,0 +1,7 @@
+[general]
+import = [
+    "~/.config/alacritty/themes/themes/pastel_dark.toml"
+]
+
+[window]
+level = "AlwaysOnTop"

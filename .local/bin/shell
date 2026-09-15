@@ -25,7 +25,20 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-pgrep pipewire >/dev/null || pipewire &
-pgrep wireplumber >/dev/null || wireplumber &
-pgrep pipewire-pulse >/dev/null || pipewire-pulse &
+shell()
+{
+    filename="$1"
+
+    if [ -x "${filename}.sh" ]
+    then
+        "${EDITOR}" "${filename}.sh"
+    else
+        touch "${filename}.sh"
+        chmod +x "${filename}.sh"
+        echo "#!/bin/sh" > "${filename}.sh"
+        "${EDITOR}" "${filename}.sh"
+    fi
+}
+
+shell "$1"
 

@@ -25,7 +25,23 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-pgrep pipewire >/dev/null || pipewire &
-pgrep wireplumber >/dev/null || wireplumber &
-pgrep pipewire-pulse >/dev/null || pipewire-pulse &
+with_brightnessctl()
+{
+    if ! morpheus --has brightnessctl
+    then
+        printf "is brightnessctl installed?\n"
+        exit 1
+    fi
+
+    default="100"
+
+    if [ -n "$1" ]
+    then
+        brightnessctl set "$1"
+    else
+        brightnessctl set "${default}"
+    fi
+}
+
+with_brightnessctl "$1"
 

@@ -25,7 +25,23 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-pgrep pipewire >/dev/null || pipewire &
-pgrep wireplumber >/dev/null || wireplumber &
-pgrep pipewire-pulse >/dev/null || pipewire-pulse &
+stt()
+{
+    str="$1"
+
+    while [ -n "${str}" ]
+    do
+        ch="${str%"${str#?}"}"
+        printf "%s" "${ch}"
+        str="${str#?}"
+        sleep 0.1
+    done
+
+    printf "\n"
+}
+
+for arg
+do
+    stt "${arg}"
+done
 

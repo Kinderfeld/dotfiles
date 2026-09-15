@@ -25,7 +25,70 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-pgrep pipewire >/dev/null || pipewire &
-pgrep wireplumber >/dev/null || wireplumber &
-pgrep pipewire-pulse >/dev/null || pipewire-pulse &
+diary_path="${HOME}/Documents/Diary"
+
+new_note()
+{
+    uniq_note_num="$1"
+
+    if [ -z "${uniq_note_num}" ]
+    then
+        printf "[!] cant create new note: " >&2
+        printf "unique note number is not specified.\n" >&2
+        exit 1
+    fi
+
+    if [ -n "${EDITOR}" ]
+    then
+        date > "${diary_path}/${uniq_note_num}.txt"
+        "${EDITOR}" "${diary_path}/${uniq_note_num}.txt"
+        exit 0
+    else
+        printf "[!] cant open file: editor not found.\n" >&2
+        printf "    your new note is at " >&2
+        printf "'%s/%s.txt'." "${diary_path}" "${uniq_note_num}" >&2
+        exit 1
+    fi
+}
+
+list_notes()
+{
+    printf "[*] notes:\n"
+    ls "${diary_path}" | column
+    exit 0
+}
+
+print_help()
+{
+    printf "=== diary ===\n" >&2
+    printf "available commands:\n" >&2
+    printf "    new <id> - create a new note with id.\n" >&2
+    printf "    list     - list all diary notes.\n" >&2
+    exit 2
+}
+
+option="$1"
+
+if [ "${option}" = "new" ]
+then
+    if [ "$#" -eq "2" ]
+    then
+        new_note "$2"
+    else
+        print_help
+    fi
+elif [ "${option}" = "list" ]
+then
+    if [ "$#" -eq "1" ]
+    then
+        list_notes
+    else
+        print_help
+    fi
+elif [ "${option}" != "new" ] && [ "${option}" != "list" ]
+then
+    print_help
+else
+    print_help
+fi
 

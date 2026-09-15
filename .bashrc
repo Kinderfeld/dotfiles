@@ -1,7 +1,7 @@
 #
 # Kinderfeld's `~/.bashrc`:
 #
-# Copyright 2026 kinderfeld
+# Copyright 2026-present Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -28,7 +28,10 @@
 #
 # If not running interactively, don't do anything:
 #
-[[ $- != *i* ]] && return
+if [[ $- != *i* ]]
+then
+    return
+fi
 
 #
 # Print OS info at the beginning:
@@ -49,18 +52,18 @@ declare OS
 GREEN="\[$(tput setaf 2)\]"
 RESET="\[$(tput sgr0)\]"
 PS1="$ ${GREEN}\w -> ${RESET}"
-OS="artix" # devuan, freebsd
+OS="devuan" # devuan, freebsd
 
 #
 # Exporting:
 #
-# export $(dbus-launch)
-# export MANPAGER="less"
-export MANPAGER="nvim +Man!"
-# export EDITOR="vim"
-export EDITOR="nvim"
+export MANPAGER="less"
+export EDITOR="vim"
 export HISTCONTROL="ignoredups:erasedups"
 export NO_AT_BRIDGE="1"
+
+PATH="${PATH}:${HOME}/.local/bin:/sbin"
+export PATH
 
 #
 # Aliases:
@@ -70,24 +73,26 @@ export NO_AT_BRIDGE="1"
 ## Coreutils aliases:
 ##
 alias e="exit"
+alias mv="mv -i"
+alias ..="cd .."
+alias cp="cp -ip"
 alias h="history"
 alias cls="clear"
-alias ..="cd .."
 alias ...="cd ../.."
+alias mkdir="mkdir -p"
+alias rm="rm -i --preserve-root"
 alias ls="ls --color=always --group-directories-first"
-alias rm="rm -I --preserve-root"
 
 ##
-## .bashrc aliases:
+## `.bashrc` aliases:
 ##
-alias bed="nvim ~/.bashrc"
-alias apply="source ~/.bashrc"
+alias apply="source ${HOME}/.bashrc"
+alias bed="${EDITOR} ${HOME}/.bashrc"
 
 ##
 ## Other aliases:
 ##
-alias v="nvim"
-# alias v="vim"
+alias v="vim"
 alias sudo="doas"
 alias htop="htop -t"
 alias wgvpn="doas resolvconf -u && doas wg-quick up wg0"
@@ -100,10 +105,10 @@ then
     alias unlock="doas rm /var/lib/pacman/db.lck"
 elif [[ "${OS}" = "devuan" ]]
 then
-    alias upd="apt update && apt upgrade && flatpak update"
+    alias upd="doas apt update && doas apt upgrade && flatpak update"
 elif [[ "${OS}" = "freebsd" ]]
 then
-    alias upd="pkg update && pkg upgrade"
+    alias upd="doas pkg update && doas pkg upgrade"
 fi
 
 #
@@ -121,3 +126,4 @@ shopt -s histappend
 shopt -s expand_aliases
 shopt -s checkwinsize
 shopt -s hostcomplete
+

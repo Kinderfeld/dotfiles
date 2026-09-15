@@ -25,7 +25,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-pgrep pipewire >/dev/null || pipewire &
-pgrep wireplumber >/dev/null || wireplumber &
-pgrep pipewire-pulse >/dev/null || pipewire-pulse &
+cd /home/lucifer/Downloads/tor-browser || return
+/home/lucifer/Downloads/tor-browser/start-tor-browser.desktop
 

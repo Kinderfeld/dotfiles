@@ -25,7 +25,20 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-pgrep pipewire >/dev/null || pipewire &
-pgrep wireplumber >/dev/null || wireplumber &
-pgrep pipewire-pulse >/dev/null || pipewire-pulse &
+py()
+{
+    filename="$1"
+
+    if [ -x "${filename}.py" ]
+    then
+        "${EDITOR}" "${filename}.py"
+    else
+        touch "${filename}.py"
+        chmod +x "${filename}.py"
+        echo "#!/usr/bin/env python3" > "${filename}.py"
+        "${EDITOR}" "${filename}.py"
+    fi
+}
+
+py "$1"
 

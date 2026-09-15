@@ -25,7 +25,21 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-pgrep pipewire >/dev/null || pipewire &
-pgrep wireplumber >/dev/null || wireplumber &
-pgrep pipewire-pulse >/dev/null || pipewire-pulse &
+if ! morpheus --has shellcheck
+then
+    printf "is shellcheck installed?\n"
+    exit 1
+fi
+
+specified_shell="$1"
+target_src_code="$2"
+
+shellcheck \
+    --check-sourced \
+    --color=always \
+    --extended-analysis=true \
+    --norc \
+    --enable=all \
+    --shell="${specified_shell}" \
+    "${target_src_code}"
 

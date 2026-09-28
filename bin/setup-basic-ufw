@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# Launces libreoffice (flatpak version) office suite.
-#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,11 +25,80 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if flatpak run org.libreoffice.LibreOffice
-then
-    exit 0
-else
-    printf "can't launch libreoffice. is it installed (flatpak)?\n" >&2
-    exit 1
-fi
+log()
+{
+    printf "[info] %s...\n" "$1"
+}
+
+install_ufw()
+{
+    log "installing ufw"
+
+    if morpheus -PM install ufw
+    then
+        log "ufw installed successfully"
+        return 0
+    else
+        log "failed to install ufw"
+        return 1
+    fi
+}
+
+setup_rules_ufw()
+{
+    log "configuring ufw defaults"
+
+    log "deny incoming and allow outgoing..."
+    ufw default deny incoming
+    ufw default allow outgoing
+
+    log "set 'medium' log level"
+    ufw logging medium
+
+    log "deny FTP"
+    ufw deny in 21/tcp
+    ufw deny in 21/udp
+
+    log "deny SSH"
+    ufw deny in 22/tcp
+    ufw deny in 22/udp
+    ufw deny in 2222/tcp
+    ufw deny in 2222/udp
+
+    log "deny TELNET"
+    ufw deny in 23/tcp
+    ufw deny in 23/udp
+
+    if ufw --force enable
+    then
+        log "ufw enabled successfully"
+        return 0
+    else
+        log "failed to enable ufw"
+        return 1
+    fi
+}
+
+main()
+{
+    log "'setup-basic-ufw.sh' started"
+
+    if ! morpheus --check-privileges
+    then 
+        log "root privileges not present. exiting"
+        exit 1
+    fi
+
+    if install_ufw && setup_rules_ufw
+    then
+        log "'setup-basic-ufw.sh' completed successfully"
+        ufw status numbered
+        exit 0
+    else
+        log "'setup-basic-ufw.sh' failed"
+        exit 1
+    fi
+}
+
+main
 

@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# Launces libreoffice (flatpak version) office suite.
-#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,11 +25,21 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if flatpak run org.libreoffice.LibreOffice
+if ! morpheus --has shellcheck
 then
-    exit 0
-else
-    printf "can't launch libreoffice. is it installed (flatpak)?\n" >&2
+    printf "is shellcheck installed?\n"
     exit 1
 fi
+
+specified_shell="$1"
+target_src_code="$2"
+
+shellcheck \
+    --check-sourced \
+    --color=always \
+    --extended-analysis=true \
+    --norc \
+    --enable=all \
+    --shell="${specified_shell}" \
+    "${target_src_code}"
 

@@ -1,6 +1,4 @@
-#!/bin/sh
-#
-# Launces libreoffice (flatpak version) office suite.
+#!/bin/bash
 #
 # Copyright 2026 Kinderfeld
 #
@@ -27,11 +25,50 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if flatpak run org.libreoffice.LibreOffice
+if ! morpheus --check-privileges
 then
-    exit 0
-else
-    printf "can't launch libreoffice. is it installed (flatpak)?\n" >&2
+    printf "[!] root required.\n" >&2
     exit 1
 fi
+
+# pids=$(
+#    ps -o pid,ppid,user,args -C wpa_supplicant |
+#    awk 'NR > 1 { print $1 }'
+# )
+
+# if [ -z "${pids}" ]
+# then
+#    printf "[*] no 'wpa_supplicant' processes found.\n"
+#    # exit 0
+# fi
+
+# printf "[...] killing wpa_supplicant PIDs:"
+# printf "%s" "${pids}" 
+# kill "${pids}" && printf "[*] done.\n"
+# sleep 2
+
+# remaining=$(
+#    ps -o pid= -C wpa_supplicant |
+#    awk '{ print $1 }'
+# )
+
+# if [ -n "${remaining}" ]
+# then
+#    printf "[...] force-killing remaining PIDs: "
+#    printf "%s" "${remaining}"
+#    kill -KILL "${remaining}"
+#    printf "[*] probably done.\n"
+# fi
+
+printf "[...] flushing ip routes...\n" && \
+    ip addr flush dev wlan0 && ip route flush dev wlan0 && printf "[*] done.\n"
+
+printf "[...] restarting 'connman' service...\n" && \
+    rc-service connman restart && printf "[*] done.\n"
+
+printf "now you can run these at 'connmanctl':\n"
+printf "    enable wifi\n"
+printf "    scan wifi\n"
+printf "    agent on\n"
+printf "    connect <identifier>\n"
 

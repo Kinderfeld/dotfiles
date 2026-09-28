@@ -27,7 +27,7 @@
 
 if ! morpheus --has shellcheck
 then
-    printf "is shellcheck installed?\n"
+    printf "is shellcheck installed?\n" >&2
     exit 1
 fi
 

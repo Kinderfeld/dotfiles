@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# Launces libreoffice (flatpak version) office suite.
-#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,11 +25,23 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if flatpak run org.libreoffice.LibreOffice
+__os__="devuan"
+
+printf "updating the system...\n"
+
+if [ -x "/usr/bin/morpheus" ] || [ -x "${HOME}/.local/bin/morpheus" ]
 then
+    morpheus -PM update && morpheus -PM upgrade
     exit 0
 else
-    printf "can't launch libreoffice. is it installed (flatpak)?\n" >&2
-    exit 1
+    case "${__os__}" in
+        "alpine") apk update && apk upgrade ;;
+        "arch" | "artix") pacman -Syu --noconfirm ;;
+        "ubuntu" | "debian" | "devuan") apt update && apt upgrade -y ;;
+        "freebsd" | "hardenedbsd" | "ghostbsd") pkg update && pkg upgrade -y ;;
+        *) printf "unknown os: %s." "${__os__}" >&2
+    esac
 fi
+
+printf "done.\n"
 

@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# Launces libreoffice (flatpak version) office suite.
-#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,11 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if flatpak run org.libreoffice.LibreOffice
-then
-    exit 0
-else
-    printf "can't launch libreoffice. is it installed (flatpak)?\n" >&2
-    exit 1
-fi
+pgrep pipewire >/dev/null || pipewire &
+pgrep wireplumber >/dev/null || wireplumber &
+pgrep pipewire-pulse >/dev/null || pipewire-pulse &
 

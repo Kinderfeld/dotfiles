@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# Launces libreoffice (flatpak version) office suite.
-#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,11 +25,18 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if flatpak run org.libreoffice.LibreOffice
+if ! morpheus --has mypy
 then
-    exit 0
-else
-    printf "can't launch libreoffice. is it installed (flatpak)?\n" >&2
+    printf "is mypy installed?\n"
     exit 1
 fi
+
+target_src_code="$1"
+
+mypy \
+    --extra-checks \
+    --strict \
+    --show-column-numbers \
+    --pretty \
+    "${target_src_code}"
 

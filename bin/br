@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# Launces libreoffice (flatpak version) office suite.
-#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,11 +25,23 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if flatpak run org.libreoffice.LibreOffice
-then
-    exit 0
-else
-    printf "can't launch libreoffice. is it installed (flatpak)?\n" >&2
-    exit 1
-fi
+with_brightnessctl()
+{
+    if ! morpheus --has brightnessctl
+    then
+        printf "is brightnessctl installed?\n"
+        exit 1
+    fi
+
+    default="100"
+
+    if [ -n "$1" ]
+    then
+        brightnessctl set "$1"
+    else
+        brightnessctl set "${default}"
+    fi
+}
+
+with_brightnessctl "$1"
 

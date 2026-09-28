@@ -1,5 +1,7 @@
 #!/bin/sh
 #
+# Launches Tor Browser if installed in user's Downloads.
+#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,6 +27,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-cd /home/lucifer/Downloads/tor-browser || return
-/home/lucifer/Downloads/tor-browser/start-tor-browser.desktop
+cd /home/"${USER}"/Downloads/tor-browser || return
+/home/"${USER}"/Downloads/tor-browser/start-tor-browser.desktop
 

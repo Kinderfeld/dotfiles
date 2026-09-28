@@ -1,5 +1,7 @@
 #!/bin/sh
 #
+# Launches lapce (flatpak version) text editor.
+#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,5 +27,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-flatpak run dev.lapce.lapce
+if flatpak run dev.lapce.lapce
+then
+    exit 0
+else
+    printf "can't launch lapce; is it installed (flatpak)?\n" >&2
+    exit 1
+fi
 

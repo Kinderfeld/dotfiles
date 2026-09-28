@@ -1,6 +1,4 @@
-#!/bin/sh
-#
-# Launces libreoffice (flatpak version) office suite.
+#!/bin/bash
 #
 # Copyright 2026 Kinderfeld
 #
@@ -27,11 +25,24 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if flatpak run org.libreoffice.LibreOffice
-then
-    exit 0
-else
-    printf "can't launch libreoffice. is it installed (flatpak)?\n" >&2
-    exit 1
-fi
+printf "=== SUID/SGID FILE AUDIT ===\n\n"
+
+doas find / -xdev -type f \( -perm -4000 -o -perm -2000 \) -print0 2>/dev/null |
+while IFS= read -r -d "" file
+do
+    perms="$(ls -ld "${file}" 2>/dev/null | awk '{print $1}')"
+    owner="$(stat -c '%U:%G' "${file}" 2>/dev/null)"
+    package="$(dpkg-query -S "${file}" 2>/dev/null)"
+
+    printf '%-65s %-12s %-20s' "${file}" "${perms}" "${owner}"
+
+    if [ -n "${package}" ]
+    then
+        printf "    %s\n" "${package}"
+    else
+        printf "    [NOT OWNED BY A PACKAGE]\n"
+    fi
+done
+
+printf "\n\n === END OF AUDIT ===\n"
 

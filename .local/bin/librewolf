@@ -2,6 +2,8 @@
 #
 # Copyright 2026 Kinderfeld
 #
+# Launches librewolf (flatpak version) web browser.
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -25,4 +27,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-flatpak run io.gitlab.librewolf-community &
+if flatpak run io.gitlab.librewolf-community
+then
+    exit 0
+else
+    printf "can't launch librewolf. is it installed (flatpak)?\n" >&2
+    exit 1
+fi

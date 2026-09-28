@@ -1,5 +1,7 @@
 #!/bin/sh
 #
+# Adjusts brightness level via `brightnessctl` utility.
+#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without

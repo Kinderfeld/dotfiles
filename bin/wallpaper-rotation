@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# Launces libreoffice (flatpak version) office suite.
-#
 # Copyright 2026 Kinderfeld
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,11 +25,50 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-if flatpak run org.libreoffice.LibreOffice
-then
-    exit 0
-else
-    printf "can't launch libreoffice. is it installed (flatpak)?\n" >&2
-    exit 1
-fi
+wallpapers_path="${HOME}/Documents/Wallpapers"
+
+with_xwallpaper()
+{
+    if ! morpheus --has xwallpaper
+    then
+        printf "is xwallpaper installed?\n"
+        exit 1
+    fi
+
+    while :
+    do
+        wallpaper=$(
+            find "${wallpapers_path}" -type f \
+                \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \
+               -o -iname '*.gif' -o -iname '*.webp' \) |
+               awk 'BEGIN { srand() } { files[NR] = $0 } END {
+               if (NR > 0) print files[int(rand() * NR) + 1]
+               }'
+        )
+
+        if [ -n "${wallpaper}" ]
+        then
+            xwallpaper --zoom "${wallpaper}"
+        fi
+
+        sleep 60
+    done
+}
+
+with_feh()
+{
+    if ! morpheus --has feh
+    then
+        printf "is feh installed?\n"
+        exit 1
+    fi
+
+    while :
+    do
+        feh --randomize --bg-fill "${wallpapers_path}"
+        sleep 60
+    done
+}
+
+with_xwallpaper
 
